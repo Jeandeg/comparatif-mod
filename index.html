@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Contrat de MOD CASAME — lecture rapide des deux versions</title>
+<meta name="description" content="Comparaison en un graphique des deux projets de contrat de maîtrise d'ouvrage déléguée : où chaque version s'écarte du modèle du mandat, et le réglage cible.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500&family=IBM+Plex+Sans:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  color-scheme:light;
+  --paper:#F6F7F4; --surface:#FFFFFF; --ink:#1B2430; --muted:#5A6572; --rule:#D8DDD6; --band:#EEF1EB; --hover:#DFE5DB;
+  --a:#7B2A3A; --b:#2A5A86; --sev0:#AEB7B0; --sev1:#D3A23B; --sev2:#D3682A; --sev3:#AF2A24; --ok:#3E7A4F; --cible:#3E7A4F;
+  box-sizing:border-box; padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme:dark){ :root:not([data-theme="light"]){
+  color-scheme:dark;
+  --paper:#151A1F; --surface:#1C2229; --ink:#E7EAE4; --muted:#A4ADB4; --rule:#303840; --band:#20272E; --hover:#2A323B;
+  --a:#E08A9A; --b:#86B5E3; --sev0:#505A62; --sev1:#E0B45A; --sev2:#E8863F; --sev3:#E85B4F; --ok:#7FC191; --cible:#7FC191;
+}}
+:root[data-theme="dark"]{
+  color-scheme:dark;
+  --paper:#151A1F; --surface:#1C2229; --ink:#E7EAE4; --muted:#A4ADB4; --rule:#303840; --band:#20272E; --hover:#2A323B;
+  --a:#E08A9A; --b:#86B5E3; --sev0:#505A62; --sev1:#E0B45A; --sev2:#E8863F; --sev3:#E85B4F; --ok:#7FC191; --cible:#7FC191;
+}
+html{ scroll-padding-top:env(safe-area-inset-top,0px); }
+*,*::before,*::after{ box-sizing:inherit; }
+body{ margin:0; background:var(--paper); color:var(--ink); font:16px/1.5 "IBM Plex Sans","Segoe UI",Roboto,Helvetica,Arial,sans-serif; -webkit-text-size-adjust:100%; }
+h1,h2{ font-family:"Fraunces",Georgia,"Times New Roman",serif; font-weight:500; letter-spacing:-0.005em; margin:0; }
+h1{ font-size:clamp(1.7rem,3.8vw,2.6rem); line-height:1.15; }
+h2{ font-size:clamp(1.25rem,2.4vw,1.6rem); line-height:1.2; margin-bottom:.6rem; }
+p{ margin:0 0 .8rem; }
+.wrap{ max-width:1080px; margin:0 auto; padding:0 clamp(16px,3vw,32px); }
+header.top{ padding:clamp(24px,4vw,48px) 0 clamp(16px,2.5vw,28px); }
+.context{ color:var(--muted); margin-top:.6rem; max-width:70ch; }
+.verdict{ margin-top:1.2rem; font-size:1.08rem; max-width:72ch; }
+.cards{ display:grid; grid-template-columns:1fr 1fr; gap:14px; margin:1.2rem 0 .4rem; }
+.card{ background:var(--surface); border:1px solid var(--rule); border-top:4px solid var(--a); padding:14px 18px; }
+.card.b{ border-top-color:var(--b); }
+.card .name{ font-family:"Fraunces",Georgia,serif; font-size:1.15rem; }
+.card .n{ font-family:"Fraunces",Georgia,serif; font-size:2rem; line-height:1; margin:.3rem 0 .2rem; }
+.card .n small{ font:400 .9rem/1 "IBM Plex Sans",sans-serif; color:var(--muted); }
+.card .one{ margin:0; color:var(--muted); font-size:.95rem; }
+.common{ font-size:.95rem; color:var(--muted); max-width:78ch; margin:.6rem 0 0; }
+
+section.chart{ padding:clamp(18px,3vw,36px) 0; }
+.toolbar{ display:flex; flex-wrap:wrap; justify-content:space-between; align-items:flex-end; gap:.6rem 1rem; margin-bottom:.8rem; }
+.hint{ color:var(--muted); font-size:.95rem; margin:0; }
+button.all{ font:600 .9rem "IBM Plex Sans",sans-serif; color:var(--ink); background:var(--surface); border:1px solid var(--rule); border-radius:6px; padding:7px 12px; cursor:pointer; }
+button.all:hover{ background:var(--hover); }
+button:focus-visible{ outline:2px solid var(--b); outline-offset:2px; }
+
+.board{ background:var(--surface); border:1px solid var(--rule); }
+.head{ display:grid; grid-template-columns:1fr minmax(220px,300px) 1fr; align-items:end; padding:12px 16px 8px; border-bottom:1px solid var(--rule); }
+.head .ha,.head .hb{ font-family:"Fraunces",Georgia,serif; font-size:1.05rem; }
+.head .ha{ text-align:right; color:var(--a); } .head .hb{ color:var(--b); }
+.head .ha small,.head .hb small{ display:block; font:400 .78rem "IBM Plex Sans",sans-serif; color:var(--muted); }
+.head .hc{ text-align:center; font-size:.78rem; color:var(--muted); }
+
+.crit{ border-bottom:1px solid var(--rule); }
+.crit:last-child{ border-bottom:0; }
+.row{ display:grid; grid-template-columns:1fr minmax(220px,300px) 1fr; align-items:center; width:100%; padding:0 16px; min-height:40px;
+  background:transparent; border:0; color:var(--ink); font:inherit; text-align:center; cursor:pointer; }
+.crit:nth-child(odd) .row{ background:var(--band); }
+.row:hover, .crit.open .row{ background:var(--hover); }
+.label{ font-size:.92rem; line-height:1.25; padding:6px 10px; }
+.crit.open .label{ font-weight:600; }
+.side{ position:relative; height:40px; display:flex; align-items:center; gap:6px; font-size:.8rem; font-weight:600;
+  background-image:linear-gradient(var(--rule),var(--rule)),linear-gradient(var(--rule),var(--rule)),linear-gradient(var(--rule),var(--rule));
+  background-size:1px 100%,1px 100%,1px 100%; background-repeat:no-repeat; }
+.side-a{ justify-content:flex-end; background-position:calc(100% - 29.33%) 0, calc(100% - 58.66%) 0, calc(100% - 88%) 0; border-right:1.5px solid var(--muted); }
+.side-b{ justify-content:flex-start; background-position:29.33% 0, 58.66% 0, 88% 0; border-left:1.5px solid var(--muted); }
+.bar{ display:block; height:16px; border-radius:3px; width:var(--w); flex:0 0 auto; }
+.sev1{ background:var(--sev1);} .sev2{ background:var(--sev2);} .sev3{ background:var(--sev3);}
+.side-a .val{ margin-right:2px; } .side-b .val{ margin-left:2px; }
+.ok{ color:var(--ok); font-weight:400; font-size:.78rem; padding:0 8px; }
+
+.comment{ display:grid; grid-template-rows:0fr; transition:grid-template-rows .18s ease; }
+.crit.open .comment{ grid-template-rows:1fr; }
+.comment-in{ overflow:hidden; }
+.comment-in p{ margin:0; padding:7px 16px; font-size:.93rem; display:grid; grid-template-columns:24px auto 1fr; gap:8px; align-items:start; border-top:1px dashed var(--rule); }
+.comment-in p:first-child{ border-top:0; padding-top:10px; }
+.comment-in p:last-child{ padding-bottom:12px; }
+.comment-in .target{ background:color-mix(in srgb, var(--cible) 9%, transparent); }
+.who{ display:inline-grid; place-items:center; width:22px; height:22px; border-radius:50%; font-weight:600; font-size:.78rem; color:#fff; }
+.who.a{ background:var(--a);} .who.b{ background:var(--b);} .who.t{ background:var(--cible);}
+.chip{ display:inline-block; font-size:.74rem; font-weight:600; padding:2px 8px; border-radius:999px; color:#fff; white-space:nowrap; margin-top:1px; }
+.chip.sev0{ background:var(--sev0); color:var(--ink);} .chip.sev1{ background:var(--sev1); color:#1B2430;} .chip.sev2{ background:var(--sev2);} .chip.sev3{ background:var(--sev3);}
+.chip.cible{ background:var(--cible); }
+.legend{ display:flex; flex-wrap:wrap; gap:.4rem 1.1rem; margin:.8rem 0 0; font-size:.88rem; color:var(--muted); }
+.legend span::before{ content:""; display:inline-block; width:12px; height:12px; border-radius:3px; margin-right:.35rem; vertical-align:-1px; }
+.legend .l0::before{ background:var(--sev0);} .legend .l1::before{ background:var(--sev1);} .legend .l2::before{ background:var(--sev2);} .legend .l3::before{ background:var(--sev3);}
+
+section.target{ padding:clamp(14px,2.5vw,28px) 0 clamp(24px,3vw,40px); }
+.lines{ margin:0; padding:0; list-style:none; columns:2; column-gap:28px; }
+.lines li{ break-inside:avoid; padding:8px 0; border-top:1px solid var(--rule); font-size:.95rem; }
+.lines li b{ font-weight:600; }
+footer{ padding:14px 0 44px; color:var(--muted); font-size:.85rem; border-top:1px solid var(--rule); }
+footer p{ margin:.4rem 0; max-width:90ch; }
+
+@media (max-width:720px){
+  .cards{ grid-template-columns:1fr; }
+  .lines{ columns:1; }
+  .head{ grid-template-columns:1fr 1fr; padding:10px 12px 6px; }
+  .head .hc{ display:none; }
+  .row{ grid-template-columns:1fr 1fr; grid-template-areas:"l l" "a b"; padding:6px 12px; row-gap:2px; }
+  .label{ grid-area:l; text-align:left; padding:2px 0 0; }
+  .side-a{ grid-area:a; } .side-b{ grid-area:b; }
+  .side{ height:30px; }
+  .bar{ height:12px; }
+  .comment-in p{ grid-template-columns:22px 1fr; row-gap:4px; }
+  .comment-in p .chip{ grid-column:2; justify-self:start; }
+  .comment-in p .txt{ grid-column:2; }
+  .head .ha,.head .hb{ font-size:.95rem; }
+  .head .ha{ padding-right:10px; } .head .hb{ padding-left:10px; }
+}
+@media (prefers-reduced-motion:reduce){ .comment{ transition:none; } }
+@media print{ .comment{ grid-template-rows:1fr !important; } button.all{ display:none; } .row{ break-inside:avoid; } }
+</style>
+</head>
+<body>
+<header class="top"><div class="wrap">
+  <h1>Contrat de MOD CASAME : ce qui sépare les deux versions</h1>
+  <p class="context">Projet de mandat de maîtrise d'ouvrage déléguée entre Living Shell 1 (Propriétaire) et CASAME &amp; CARE (MOD), pour une rénovation d'environ 300 k€ de travaux dans une opération de 1,2 M€. Deux versions en circulation, « GIDE » et « Virginie », lues au regard du droit du mandat (Code civil, art. 1984 s.), du modèle codifié du mandat de maîtrise d'ouvrage (CCP, art. L. 2422-5 s., par analogie) et des pratiques de place (MIQCP).</p>
+  <p class="verdict">La version GIDE va trop loin : elle donne au mandataire le rôle d'un chef d'orchestre mais lui fait porter les risques d'un constructeur. La version Virginie ne va pas assez loin : elle rend au mandataire le régime d'un mandat mais lui retire la direction du projet. Le contrat cible prend le périmètre de l'une, le régime de l'autre, et règle ce que les deux laissent ouvert.</p>
+  <div class="cards">
+    <div class="card a"><div class="name">Version A — GIDE</div><div class="n">29<small> / 48 points d'écart</small></div><p class="one">Quatre contradictions avec la nature du mandat : qualification, obligation de résultat, achèvement, durée de dix ans.</p></div>
+    <div class="card b"><div class="name">Version B — Virginie</div><div class="n">20<small> / 48 points d'écart</small></div><p class="one">Aucune contradiction, mais un mandataire réduit à l'assistance et deux protections du Propriétaire supprimées : propriété intellectuelle, transparence du conflit d'intérêts.</p></div>
+  </div>
+  <p class="common">Commun aux deux : budget en blanc, dommages-ouvrage au conditionnel, ni plafond ni pénalités, et un mandat de signature qui ne couvre ni les contrats ni les paiements.</p>
+</div></header>
+
+<section class="chart"><div class="wrap">
+  <div class="toolbar">
+    <div><h2>Seize critères, deux versions</h2><p class="hint">Survolez ou touchez un critère pour lire pourquoi une version est excessive, l'autre insuffisante, et le réglage cible. Plus la barre est longue, plus la version s'écarte du modèle du mandat.</p></div>
+    <button class="all" id="all" type="button" aria-pressed="false">Tout déplier</button>
+  </div>
+  <div class="board">
+    <div class="head"><div class="ha">Version A — GIDE<small>← écart croissant</small></div><div class="hc">critère</div><div class="hb">Version B — Virginie<small>écart croissant →</small></div></div>
+    
+<div class="crit" data-id="qualif">
+  <button class="row" type="button" aria-expanded="false" aria-controls="c-qualif" id="b-qualif">
+    <span class="side side-a"><span class="val">3</span><span class="bar sev3" style="--w:88.0%"></span></span>
+    <span class="label">Qualification juridique du contrat</span>
+    <span class="side side-b"><span class="bar sev1" style="--w:29.3%"></span><span class="val">1</span></span>
+  </button>
+  <div class="comment" id="c-qualif" role="region" aria-labelledby="b-qualif">
+    <div class="comment-in">
+      <p><span class="who a">A</span><span class="chip sev3">contradiction</span><span class="txt">Se dit « mandat » mais fait refaire des travaux aux frais du MOD et le fait garantir le Propriétaire de tout : c'est le régime d'un constructeur, contraire à son propre art. 1.2.</span></p>
+      <p><span class="who b">B</span><span class="chip sev1">écart mineur</span><span class="txt">Même mandat, clauses d'immixtion retirées. Reste une maladresse : les art. 1787 s. sont cités comme fondement puis exclus.</span></p>
+      <p class="target"><span class="who t">→</span><span class="chip cible">cible</span><span class="txt">Mandat + assistance intellectuelle, sans mission technique ni prise en charge de travaux (art. 1792-1, 3° C. civ.).</span></p>
+    </div>
+  </div>
+</div>
+<div class="crit" data-id="pouvoirs">
+  <button class="row" type="button" aria-expanded="false" aria-controls="c-pouvoirs" id="b-pouvoirs">
+    <span class="side side-a"><span class="val">2</span><span class="bar sev2" style="--w:58.7%"></span></span>
+    <span class="label">Pouvoirs effectivement délégués</span>
+    <span class="side side-b"><span class="bar sev2" style="--w:58.7%"></span><span class="val">2</span></span>
+  </button>
+  <div class="comment" id="c-pouvoirs" role="region" aria-labelledby="b-pouvoirs">
+    <div class="comment-in">
+      <p><span class="who a">A</span><span class="chip sev2">écart significatif</span><span class="txt">« Délégation de signature » annoncée, mais tous les contrats et tous les paiements sont réservés au Propriétaire : le MOD ne signe que des ordres de service.</span></p>
+      <p><span class="who b">B</span><span class="chip sev2">écart significatif</span><span class="txt">Identique : le mandat est largement vidé de sa substance.</span></p>
+      <p class="target"><span class="who t">→</span><span class="chip cible">cible</span><span class="txt">Choisir : signature après approbation de l'attributaire et bons à payer (vrai mandat), ou assistance assumée (conduite d'opération).</span></p>
+    </div>
+  </div>
+</div>
+<div class="crit" data-id="perimetre">
+  <button class="row" type="button" aria-expanded="false" aria-controls="c-perimetre" id="b-perimetre">
+    <span class="side side-a"><span class="val">2</span><span class="bar sev2" style="--w:58.7%"></span></span>
+    <span class="label">Périmètre des missions</span>
+    <span class="side side-b"><span class="bar sev2" style="--w:58.7%"></span><span class="val">2</span></span>
+  </button>
+  <div class="comment" id="c-perimetre" role="region" aria-labelledby="b-perimetre">
+    <div class="comment-in">
+      <p><span class="who a">A</span><span class="chip sev2">écart significatif</span><span class="txt">Liste complète mais « non limitative » : le MOD doit tout ce qui est « normalement prévisible », sans savoir quoi exactement.</span></p>
+      <p><span class="who b">B</span><span class="chip sev2">écart significatif</span><span class="txt">Liste réduite à l'assistance : aucun avis technique, coordination renvoyée à la maîtrise d'œuvre. C'est une conduite d'opération.</span></p>
+      <p class="target"><span class="who t">→</span><span class="chip cible">cible</span><span class="txt">Liste fermée par phase, avec livrables datés et exclusions explicites.</span></p>
+    </div>
+  </div>
+</div>
+<div class="crit" data-id="obligation">
+  <button class="row" type="button" aria-expanded="false" aria-controls="c-obligation" id="b-obligation">
+    <span class="side side-a"><span class="val">3</span><span class="bar sev3" style="--w:88.0%"></span></span>
+    <span class="label">Nature de l'obligation du MOD</span>
+    <span class="side side-b"><span class="ok">aligné</span></span>
+  </button>
+  <div class="comment" id="c-obligation" role="region" aria-labelledby="b-obligation">
+    <div class="comment-in">
+      <p><span class="who a">A</span><span class="chip sev3">contradiction</span><span class="txt">Obligation de résultat sur « les opérations matérielles » et le respect de la réglementation : excessif pour un mandataire.</span></p>
+      <p><span class="who b">B</span><span class="chip sev0">aligné</span><span class="txt">Obligation de moyens : conforme au droit du mandat et à la pratique (MIQCP).</span></p>
+      <p class="target"><span class="who t">→</span><span class="chip cible">cible</span><span class="txt">Moyens, plus quelques obligations de résultat datées (livrables) assorties de pénalités.</span></p>
+    </div>
+  </div>
+</div>
+<div class="crit" data-id="budget">
+  <button class="row" type="button" aria-expanded="false" aria-controls="c-budget" id="b-budget">
+    <span class="side side-a"><span class="val">2</span><span class="bar sev2" style="--w:58.7%"></span></span>
+    <span class="label">Programme et Budget Prévisionnel</span>
+    <span class="side side-b"><span class="bar sev1" style="--w:29.3%"></span><span class="val">1</span></span>
+  </button>
+  <div class="comment" id="c-budget" role="region" aria-labelledby="b-budget">
+    <div class="comment-in">
+      <p><span class="who a">A</span><span class="chip sev2">écart significatif</span><span class="txt">Budget « établi » et faisabilité « confirmée » par le MOD, montant en blanc : il garantit sa propre estimation.</span></p>
+      <p><span class="who b">B</span><span class="chip sev1">écart mineur</span><span class="txt">Budget « proposé » par le MOD et validé par le Propriétaire, montant toujours en blanc.</span></p>
+      <p class="target"><span class="who t">→</span><span class="chip cible">cible</span><span class="txt">Budget chiffré et validé avant signature : c'est la limite même du mandat.</span></p>
+    </div>
+  </div>
+</div>
+<div class="crit" data-id="urbanisme">
+  <button class="row" type="button" aria-expanded="false" aria-controls="c-urbanisme" id="b-urbanisme">
+    <span class="side side-a"><span class="val">2</span><span class="bar sev2" style="--w:58.7%"></span></span>
+    <span class="label">Autorisations d'urbanisme</span>
+    <span class="side side-b"><span class="ok">aligné</span></span>
+  </button>
+  <div class="comment" id="c-urbanisme" role="region" aria-labelledby="b-urbanisme">
+    <div class="comment-in">
+      <p><span class="who a">A</span><span class="chip sev2">écart significatif</span><span class="txt">Le MOD « fait son affaire » de la DP, garantit le Propriétaire de toutes conséquences et renonce à tout recours : il porte seul un aléa administratif.</span></p>
+      <p><span class="who b">B</span><span class="chip sev0">aligné</span><span class="txt">Assistance au transfert et au suivi ; le maître d'œuvre reste responsable du dossier.</span></p>
+      <p class="target"><span class="who t">→</span><span class="chip cible">cible</span><span class="txt">Obligation de moyens ; recours ou retrait = aléa du Propriétaire, sauf faute du MOD.</span></p>
+    </div>
+  </div>
+</div>
+<div class="crit" data-id="achevement">
+  <button class="row" type="button" aria-expanded="false" aria-controls="c-achevement" id="b-achevement">
+    <span class="side side-a"><span class="val">3</span><span class="bar sev3" style="--w:88.0%"></span></span>
+    <span class="label">Achèvement, réception, levée des réserves</span>
+    <span class="side side-b"><span class="bar sev1" style="--w:29.3%"></span><span class="val">1</span></span>
+  </button>
+  <div class="comment" id="c-achevement" role="region" aria-labelledby="b-achevement">
+    <div class="comment-in">
+      <p><span class="who a">A</span><span class="chip sev3">contradiction</span><span class="txt">« Exécution complète » exigée ; si le constat est refusé, le MOD refait les travaux à ses frais : clause de constructeur.</span></p>
+      <p><span class="who b">B</span><span class="chip sev1">écart mineur</span><span class="txt">Définition standard (R. 261-1 CCH), MOD en assistance. Définition encore « à aligner avec le BEFA ».</span></p>
+      <p class="target"><span class="who t">→</span><span class="chip cible">cible</span><span class="txt">Réception prononcée par le Propriétaire sur proposition du MOD ; reprises à la charge des entreprises et de leur retenue de garantie.</span></p>
+    </div>
+  </div>
+</div>
+<div class="crit" data-id="duree">
+  <button class="row" type="button" aria-expanded="false" aria-controls="c-duree" id="b-duree">
+    <span class="side side-a"><span class="val">3</span><span class="bar sev3" style="--w:88.0%"></span></span>
+    <span class="label">Durée, fin de mission, quitus</span>
+    <span class="side side-b"><span class="bar sev1" style="--w:29.3%"></span><span class="val">1</span></span>
+  </button>
+  <div class="comment" id="c-duree" role="region" aria-labelledby="b-duree">
+    <div class="comment-in">
+      <p><span class="who a">A</span><span class="chip sev3">contradiction</span><span class="txt">Jusqu'à l'expiration de toutes les garanties légales : dix ans d'engagement, sans contenu de mission défini pour cette période.</span></p>
+      <p><span class="who b">B</span><span class="chip sev1">écart mineur</span><span class="txt">Jusqu'à la fin de la garantie de parfait achèvement, mais sans quitus formel.</span></p>
+      <p class="target"><span class="who t">→</span><span class="chip cible">cible</span><span class="txt">Quitus après GPA et solde des marchés ; suivi des sinistres décennaux en mission optionnelle.</span></p>
+    </div>
+  </div>
+</div>
+<div class="crit" data-id="responsabilite">
+  <button class="row" type="button" aria-expanded="false" aria-controls="c-responsabilite" id="b-responsabilite">
+    <span class="side side-a"><span class="val">2</span><span class="bar sev2" style="--w:58.7%"></span></span>
+    <span class="label">Responsabilité, plafond, pénalités</span>
+    <span class="side side-b"><span class="bar sev2" style="--w:58.7%"></span><span class="val">2</span></span>
+  </button>
+  <div class="comment" id="c-responsabilite" role="region" aria-labelledby="b-responsabilite">
+    <div class="comment-in">
+      <p><span class="who a">A</span><span class="chip sev2">écart significatif</span><span class="txt">Pas de plafond, garanties illimitées, aucune pénalité : non recouvrable sur une SAS au capital de 1 071 €.</span></p>
+      <p><span class="who b">B</span><span class="chip sev2">écart significatif</span><span class="txt">Pas de plafond, aucune pénalité : le Propriétaire n'a aucun levier gradué.</span></p>
+      <p class="target"><span class="who t">→</span><span class="chip cible">cible</span><span class="txt">Pénalités sur obligations datées ; plafond global cohérent avec la RC Pro.</span></p>
+    </div>
+  </div>
+</div>
+<div class="crit" data-id="assurances">
+  <button class="row" type="button" aria-expanded="false" aria-controls="c-assurances" id="b-assurances">
+    <span class="side side-a"><span class="val">2</span><span class="bar sev2" style="--w:58.7%"></span></span>
+    <span class="label">Assurances</span>
+    <span class="side side-b"><span class="bar sev1" style="--w:29.3%"></span><span class="val">1</span></span>
+  </button>
+  <div class="comment" id="c-assurances" role="region" aria-labelledby="b-assurances">
+    <div class="comment-in">
+      <p><span class="who a">A</span><span class="chip sev2">écart significatif</span><span class="txt">Dommages-ouvrage « si les travaux le nécessitent », aucun montant, aucune décennale du MOD alors que son régime l'y expose.</span></p>
+      <p><span class="who b">B</span><span class="chip sev1">écart mineur</span><span class="txt">Même conditionnel ; exposition du MOD plus faible.</span></p>
+      <p class="target"><span class="who t">→</span><span class="chip cible">cible</span><span class="txt">DO obligatoire sauf avis écrit du courtier ; RC Pro du MOD avec minima, condition d'entrée en vigueur.</span></p>
+    </div>
+  </div>
+</div>
+<div class="crit" data-id="hse">
+  <button class="row" type="button" aria-expanded="false" aria-controls="c-hse" id="b-hse">
+    <span class="side side-a"><span class="val">2</span><span class="bar sev2" style="--w:58.7%"></span></span>
+    <span class="label">Hygiène-sécurité, CSPS, délégation de pouvoirs</span>
+    <span class="side side-b"><span class="bar sev1" style="--w:29.3%"></span><span class="val">1</span></span>
+  </button>
+  <div class="comment" id="c-hse" role="region" aria-labelledby="b-hse">
+    <div class="comment-in">
+      <p><span class="who a">A</span><span class="chip sev2">écart significatif</span><span class="txt">Transfert contractuel de la responsabilité pénale via une délégation de pouvoirs « à établir » : fragile en droit, irréaliste en pratique.</span></p>
+      <p><span class="who b">B</span><span class="chip sev1">écart mineur</span><span class="txt">Clauses à insérer dans les contrats, CSPS « si nécessaire », annexe 5 orpheline.</span></p>
+      <p class="target"><span class="who t">→</span><span class="chip cible">cible</span><span class="txt">CSPS désigné d'emblée, formalités du maître d'ouvrage confiées au mandataire, délégation réaliste ou pas de délégation.</span></p>
+    </div>
+  </div>
+</div>
+<div class="crit" data-id="conflit">
+  <button class="row" type="button" aria-expanded="false" aria-controls="c-conflit" id="b-conflit">
+    <span class="side side-a"><span class="ok">aligné</span></span>
+    <span class="label">Conflit d'intérêts MOD / Preneur</span>
+    <span class="side side-b"><span class="bar sev2" style="--w:58.7%"></span><span class="val">2</span></span>
+  </button>
+  <div class="comment" id="c-conflit" role="region" aria-labelledby="b-conflit">
+    <div class="comment-in">
+      <p><span class="who a">A</span><span class="chip sev0">aligné</span><span class="txt">Le lien MOD / Preneur (même président) est écrit, les actes avec le Preneur sont réservés, ses demandes de travaux sont encadrées.</span></p>
+      <p><span class="who b">B</span><span class="chip sev2">écart significatif</span><span class="txt">Le lien n'est plus écrit ; l'encadrement des demandes du Preneur a disparu.</span></p>
+      <p class="target"><span class="who t">→</span><span class="chip cible">cible</span><span class="txt">Déclaration du lien et procédure écrite de traitement des demandes du Preneur.</span></p>
+    </div>
+  </div>
+</div>
+<div class="crit" data-id="pi">
+  <button class="row" type="button" aria-expanded="false" aria-controls="c-pi" id="b-pi">
+    <span class="side side-a"><span class="ok">aligné</span></span>
+    <span class="label">Propriété intellectuelle et livrables</span>
+    <span class="side side-b"><span class="bar sev2" style="--w:58.7%"></span><span class="val">2</span></span>
+  </button>
+  <div class="comment" id="c-pi" role="region" aria-labelledby="b-pi">
+    <div class="comment-in">
+      <p><span class="who a">A</span><span class="chip sev0">aligné</span><span class="txt">Cession complète des documents du MOD et exigence de cession dans les contrats de maîtrise d'œuvre.</span></p>
+      <p><span class="who b">B</span><span class="chip sev2">écart significatif</span><span class="txt">Clause supprimée, exigence envers le maître d'œuvre supprimée : le Propriétaire n'a plus de droits sur les plans pour l'avenir.</span></p>
+      <p class="target"><span class="who t">→</span><span class="chip cible">cible</span><span class="txt">Licence proportionnée sur les documents du MOD ; licence de réutilisation et de modification imposée au MOE.</span></p>
+    </div>
+  </div>
+</div>
+<div class="crit" data-id="resiliation">
+  <button class="row" type="button" aria-expanded="false" aria-controls="c-resiliation" id="b-resiliation">
+    <span class="side side-a"><span class="val">1</span><span class="bar sev1" style="--w:29.3%"></span></span>
+    <span class="label">Résiliation et renonciations</span>
+    <span class="side side-b"><span class="bar sev1" style="--w:29.3%"></span><span class="val">1</span></span>
+  </button>
+  <div class="comment" id="c-resiliation" role="region" aria-labelledby="b-resiliation">
+    <div class="comment-in">
+      <p><span class="who a">A</span><span class="chip sev1">écart mineur</span><span class="txt">Renonciation aux sanctions de l'inexécution (art. 1219 à 1226) : le Propriétaire perd la résolution par notification et l'exécution par un tiers.</span></p>
+      <p><span class="who b">B</span><span class="chip sev1">écart mineur</span><span class="txt">Renonciation limitée à l'imprévision ; abandon du projet à dix jours.</span></p>
+      <p class="target"><span class="who t">→</span><span class="chip cible">cible</span><span class="txt">Préavis court, renonciation limitée, sort de l'acompte initial réglé.</span></p>
+    </div>
+  </div>
+</div>
+<div class="crit" data-id="controle">
+  <button class="row" type="button" aria-expanded="false" aria-controls="c-controle" id="b-controle">
+    <span class="side side-a"><span class="val">1</span><span class="bar sev1" style="--w:29.3%"></span></span>
+    <span class="label">Obligations du Propriétaire, contrôle de la mission</span>
+    <span class="side side-b"><span class="bar sev1" style="--w:29.3%"></span><span class="val">1</span></span>
+  </button>
+  <div class="comment" id="c-controle" role="region" aria-labelledby="b-controle">
+    <div class="comment-in">
+      <p><span class="who a">A</span><span class="chip sev1">écart mineur</span><span class="txt">Le Propriétaire ne s'engage que « dans la mesure du possible » ; reporting en revanche détaillé.</span></p>
+      <p><span class="who b">B</span><span class="chip sev1">écart mineur</span><span class="txt">Engagements fermes ; reporting allégé.</span></p>
+      <p class="target"><span class="who t">→</span><span class="chip cible">cible</span><span class="txt">Engagements datés du Propriétaire, reporting mensuel formalisé.</span></p>
+    </div>
+  </div>
+</div>
+<div class="crit" data-id="redaction">
+  <button class="row" type="button" aria-expanded="false" aria-controls="c-redaction" id="b-redaction">
+    <span class="side side-a"><span class="val">1</span><span class="bar sev1" style="--w:29.3%"></span></span>
+    <span class="label">Cohérence rédactionnelle, renvois, annexes</span>
+    <span class="side side-b"><span class="bar sev2" style="--w:58.7%"></span><span class="val">2</span></span>
+  </button>
+  <div class="comment" id="c-redaction" role="region" aria-labelledby="b-redaction">
+    <div class="comment-in">
+      <p><span class="who a">A</span><span class="chip sev1">écart mineur</span><span class="txt">Notes de rédaction en clair, blancs, renvois à vérifier, tribunal de Lille cité pour l'expert.</span></p>
+      <p><span class="who b">B</span><span class="chip sev2">écart significatif</span><span class="txt">Sommaire périmé, annexe orpheline, coquilles, contradiction sur l'art. 1787.</span></p>
+      <p class="target"><span class="who t">→</span><span class="chip cible">cible</span><span class="txt">Relecture complète, sommaire et annexes mis à jour.</span></p>
+    </div>
+  </div>
+</div>
+  </div>
+  <div class="legend"><span class="l0">0 · aligné</span><span class="l1">1 · écart mineur</span><span class="l2">2 · écart significatif</span><span class="l3">3 · contradiction avec le mandat ou une règle de droit</span></div>
+</div></section>
+
+<section class="target"><div class="wrap">
+  <h2>Le contrat cible en sept lignes</h2>
+  <ul class="lines">
+    <li><b>Mandat assumé.</b> Le MOD signe les contrats après approbation de l'attributaire, les avenants sous un seuil, et émet les bons à payer.</li>
+    <li><b>Missions fermées.</b> Liste par phase avec livrables, exclusions explicites, obligation de moyens.</li>
+    <li><b>Budget arrêté avant signature.</b> Travaux, études, assurances, aléas : chiffrés et validés par le Propriétaire.</li>
+    <li><b>Assurances fermes.</b> Dommages-ouvrage obligatoire sauf avis écrit du courtier ; RC Pro du MOD avec minima.</li>
+    <li><b>Responsabilité cadrée.</b> Pénalités sur livrables datés, plafond cohérent avec la RC Pro, plus de travaux à la charge du MOD.</li>
+    <li><b>Fin au quitus.</b> Après garantie de parfait achèvement et solde des marchés ; suivi décennal en option.</li>
+    <li><b>Loyauté et plans.</b> Lien MOD / Preneur déclaré et encadré ; licence sur les plans imposée au maître d'œuvre.</li>
+  </ul>
+</div></section>
+
+<footer><div class="wrap">
+  <p>Grille de lecture établie le 15 octobre 2026 à partir des deux projets transmis (versions « vSuivi210726 », sans commentaires ni modifications suivies). Les notes de 0 à 3 mesurent l'écart au modèle du mandat de maîtrise d'ouvrage ; elles ne sont pas une pondération juridique. Analyse documentaire, qui ne constitue pas un avis juridique.</p>
+  <p>Références : Code civil (art. 1161, 1195, 1217 s., 1792-1, 1792-6, 1831-1, 1984 à 2010) ; Code de la commande publique (art. L. 2422-5 à L. 2422-11) ; Code des assurances (art. L. 241-2, L. 242-1) ; Code du travail (art. L. 4532-2 s., L. 8222-1) ; CCH (art. R. 261-1) ; guide MIQCP 2006 sur le mandat et la conduite d'opération.</p>
+</div></footer>
+<script>
+(function(){
+  var canHover = window.matchMedia('(hover:hover) and (pointer:fine)').matches;
+  var crits = Array.prototype.slice.call(document.querySelectorAll('.crit'));
+  var allBtn = document.getElementById('all');
+  var allOpen = false;
+  function paint(c){
+    var open = allOpen || c._pinned || c._hover || c._focus;
+    c.classList.toggle('open', !!open);
+    c.querySelector('.row').setAttribute('aria-expanded', open ? 'true' : 'false');
+  }
+  crits.forEach(function(c){
+    var row = c.querySelector('.row');
+    c._pinned = false; c._hover = false; c._focus = false;
+    if (canHover){
+      c.addEventListener('pointerenter', function(){ c._hover = true; paint(c); });
+      c.addEventListener('pointerleave', function(){ c._hover = false; paint(c); });
+    }
+    row.addEventListener('click', function(){
+      c._pinned = !c._pinned;
+      if (!c._pinned && !canHover){ c._hover = false; }
+      paint(c);
+    });
+    row.addEventListener('focus', function(){ if (row.matches(':focus-visible')) { c._focus = true; paint(c); } });
+    row.addEventListener('blur', function(){ c._focus = false; paint(c); });
+    row.addEventListener('keydown', function(e){ if (e.key === 'Escape'){ c._pinned = false; paint(c); } });
+  });
+  allBtn.addEventListener('click', function(){
+    allOpen = !allOpen;
+    allBtn.textContent = allOpen ? 'Tout replier' : 'Tout déplier';
+    allBtn.setAttribute('aria-pressed', allOpen ? 'true' : 'false');
+    crits.forEach(paint);
+  });
+})();
+</script>
+</body></html>
